@@ -18,7 +18,7 @@ const createProduct = (req, res) => {
 }
 
 const getProducts = (req, res) => {
-    Product.find({}).populate({ path: 'category status' }).exec((error, products) => {
+    Product.find({},(error, products) => {
         if (error) {
             return res.status(400).send({ message: "No se pudo realizar la busqueda" })
         }
@@ -29,7 +29,49 @@ const getProducts = (req, res) => {
     })
 }
 
+const updateProduct = (req, res) => {
+    const { id } = req.params
+    Product.findByIdAndUpdate(id, req.body, (error, product) => {
+        if (error) {
+            return res.status(400).send({ message: "No se pudo actualizar el producto" })
+        }
+        if (!product) {
+            return res.status(404).send({ message: "No se encontro el producto" })
+        }
+        return res.status(200).send({ message: "Producto modificado" })
+    })
+}
+
+const deleteProduct = (req, res) => {
+    const { id } = req.params
+    Product.findByIdAndDelete(id, (error, product) => {
+        if (error) {
+            return res.status(400).send({ message: "No se ha podido eliminar el producto" })
+        }
+        if (!product) {
+            return res.status(404).send({ message: "No se ha podido encontrar un producto" })
+        }
+        return res.status(200).send({ message: "Se ha eliminado el producto de forma correcta" })
+    })
+}
+
+const getProduct = (req, res) => {
+    const { id } = req.params
+    Product.findById(id, (error, product) => {
+        if (error) {
+            return res.status(400).send({ message: "No se ha podido modificar el producto" })
+        }
+        if (!product) {
+            return res.status(404).send({ message: "No se ha podido encontrar un producto" })
+        }
+        return res.status(200).send(product)
+    })
+}
+
 module.exports = {
     createProduct,
-    getProducts
+    getProducts,
+    updateProduct,
+    deleteProduct,
+    getProduct
 }
